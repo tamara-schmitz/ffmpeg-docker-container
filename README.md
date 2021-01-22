@@ -24,19 +24,19 @@ The shown commands work with either `podman` and `docker` as a prefix. You can s
 
 #### Simple FLAC to MP3 conversion
 
-`podman run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw -i input.flac -c:a libmp3lame -b:a 320k output.mp3"
+`podman run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw -i input.flac -c:a libmp3lame -b:a 320k output.mp3`
 
 #### Convert 2K gameplay footage to VP9 video in an MKV
 
 ```bash
 export INPUT=inputfile.mp4
 export OUTPUT=outputfile.mkv
-time sh -c 'nice -n19 podman run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw -y -i "/temp/$INPUT" \
+time sh -c 'podman run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw -y -i "/temp/$INPUT" \
 -c:v libvpx-vp9 -b:v 12M -deadline good -cpu-used 2 -threads 7 -g 660 -tile-columns 3 -row-mt 1 -frame-parallel 0 -vsync 2 -aq-mode 1 \
 -pass 1 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -c:a libopus -b:a 256k -ac 2 -vbr on \
 -f webm /dev/null && \
-nice -n19  podman run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw -i "/temp/$INPUT" \
+podman run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw -i "/temp/$INPUT" \
 -c:v libvpx-vp9 -b:v 12M -deadline good -cpu-used 2 -threads 7 -g 660 -tile-columns 3 -row-mt 1 -frame-parallel 0 -vsync 2 -aq-mode 1 \
 -pass 2 -auto-alt-ref 2 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -c:a copy \
