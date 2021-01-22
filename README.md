@@ -1,5 +1,5 @@
 # ffmpeg-docker-container
-A personal FFmpeg container using a recent FFmpeg and library version based off the work of openSUSE Tumbleweed and packman projects.
+A personal FFmpeg container using a recent FFmpeg and library version based off the work of openSUSE Tumbleweed and packman projects. Tested on Linux, likely runs on Windows.
 
 Compatible with *podman* and *docker-ce*. Built on [Docker Hub](https://hub.docker.com/repository/docker/zennoe/ffmpeg-docker-ostw/)
 
@@ -41,4 +41,23 @@ podman run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw -i "/temp/$INPUT" \
 -pass 2 -auto-alt-ref 2 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -c:a copy \
 "/temp/$OUTPUT"'
+```
+
+#### Play a video through the container. (Requires a local installation of ffplay to work)
+
+```bash
+export INPUT=video.mkv
+podman run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw -i "/temp/$INPUT" \
+-c:v rawvideo -f matroska \
+- | ffplay -
+```
+
+#### Export a single still PNG from video
+
+```bash
+export INPUT=video.mkv
+export OUTPUT=out.png
+podman run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw \
+-ss 00:01:30 -i "/temp/$INPUT" \
+-vframes 1 "/temp/$OUTPUT
 ```
