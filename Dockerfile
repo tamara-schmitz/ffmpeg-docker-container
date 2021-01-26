@@ -1,4 +1,4 @@
-FROM	registry.opensuse.org/opensuse/tumbleweed:latest
+FROM	opensuse/tumbleweed:latest
 
 ENV ZYPPER_PACKAGES="ffmpeg libass9 \
 		libopus0 libogg0 libvorbis0 libmp3lame0 libfdk-aac2 \
