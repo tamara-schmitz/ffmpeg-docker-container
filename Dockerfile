@@ -1,6 +1,7 @@
 FROM	opensuse/tumbleweed:latest
 
-ENV ZYPPER_PACKAGES="ffmpeg libass9 \
+ENV ZYPPER_PACKAGES="busybox \
+		ffmpeg libass9 \
 		libopus0 libogg0 libvorbis0 libmp3lame0 libfdk-aac2 \
 		libwebp7 \
 		libvpx6 x264 x265 libaom3 dav1d librav1e0"
