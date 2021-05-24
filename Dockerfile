@@ -8,6 +8,7 @@ ENV ZYPPER_PACKAGES="ffmpeg libass9 \
 RUN	zypper ar -cfp 90 http://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/ packman && \
 	zypper ar -cfp 95 https://download.opensuse.org/repositories/multimedia:libs/openSUSE_Tumbleweed/multimedia:libs.repo && \
 	zypper --gpg-auto-import-keys ref && \
+	zypper --non-interactive dup && \
 	zypper --non-interactive install $ZYPPER_PACKAGES && \
 	zypper clean -a
 
