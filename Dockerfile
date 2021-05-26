@@ -1,5 +1,7 @@
 FROM	opensuse/tumbleweed:latest
 
+RUN zypper install -y openSUSE-release-appliance-docker
+
 ENV ZYPPER_PACKAGES="busybox \
 		ffmpeg libass9 \
 		libopus0 libogg0 libvorbis0 libmp3lame0 libfdk-aac2 \
