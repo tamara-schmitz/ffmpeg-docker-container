@@ -1,7 +1,8 @@
 # ffmpeg-docker-container
 A personal FFmpeg container using a recent FFmpeg and library version based off the work of openSUSE Tumbleweed and packman projects. Tested on Linux, likely runs on Windows.
 
-Compatible with *podman* and *docker-ce*. Built on [Docker Hub](https://hub.docker.com/repository/docker/zennoe/ffmpeg-docker-ostw/)
+Compatible with *podman* and *docker-ce*. Built in the GitHub container
+registry.
 
 For Docker newbs on Windows, [see the manual for Docker For Windows](https://docs.docker.com/docker-for-windows/)
 
@@ -24,28 +25,28 @@ Feel free to take these examples and adjust them to your needs. Add a video filt
 
 #### Test the image and your runtime:
 
-`docker run --rm zennoe/ffmpeg-docker-ostw`
+`docker run --rm ghcr.io/tamara-schmitz/ffmpeg-docker-container:master`
 
 or
 
-`podman run --rm zennoe/ffmpeg-docker-ostw`
+`podman run --rm ghcr.io/tamara-schmitz/ffmpeg-docker-container:master`
 
 #### Simple FLAC to MP3 conversion
 
-`docker run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw -i input.flac -c:a libmp3lame -b:a 320k output.mp3`
+`docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:master -i input.flac -c:a libmp3lame -b:a 320k output.mp3`
 
 #### Convert 2K gameplay footage to VP9 video in an MKV
 
 ```bash
 export INPUT=inputfile.mp4
 export OUTPUT=outputfile.mkv
-time sh -c 'docker run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw -y \
+time sh -c 'docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:master -y \
 -i "/temp/$INPUT" \
 -c:v libvpx-vp9 -b:v 12M -deadline good -cpu-used 2 -threads 0 -g 660 -tile-columns 3 -row-mt 1 -frame-parallel 0 -vsync 2 -aq-mode 1 \
 -pass 1 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -c:a libopus -b:a 256k -ac 2 -vbr on \
 -f webm /dev/null && \
-docker run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw \
+docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:master \
 -i "/temp/$INPUT" \
 -c:v libvpx-vp9 -b:v 12M -deadline good -cpu-used 2 -threads 0 -g 660 -tile-columns 3 -row-mt 1 -frame-parallel 0 -vsync 2 -aq-mode 1 \
 -pass 2 -auto-alt-ref 2 -passlogfile "/temp/$(basename "$OUTPUT")" \
@@ -58,14 +59,14 @@ docker run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw \
 ```bash
 export INPUT=inputfile.mp4
 export OUTPUT=outputfile.webm
-time sh -c 'docker run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw -y \
+time sh -c 'docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:master -y \
 -i "/temp/$INPUT" \
 -vf scale=-1:720:flags=lanczos \
 -c:v libvpx-vp9 -b:v 1.5M -deadline good -cpu-used 1 -threads 0 -g 450 -tile-columns 2 -row-mt 1 -frame-parallel 0 -vsync 2 -aq-mode 1 \
 -pass 1 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -c:a libopus -b:a 128k -ac 2 -vbr on \
 -f webm /dev/null && \
-docker run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw \
+docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:master \
 -i "/temp/$INPUT" \
 -vf scale=-1:720:flags=lanczos \
 -c:v libvpx-vp9 -b:v 1.5M -deadline good -cpu-used 1 -threads 0 -g 450 -tile-columns 2 -row-mt 1 -frame-parallel 0 -vsync 2 -aq-mode 1 \
@@ -79,7 +80,7 @@ docker run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw \
 ```bash
 export INPUT=inputfile.mp4
 export OUTPUT=outputfile.gif
-docker run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw \
+docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:master \
 -ss 00:00:02.25 -t 2.6 -i "$INPUT" \
 -filter_complex "[0:v] fps=15,scale=480:-1:flags=lanczos,split [a][b];[a] palettegen [p];[b][p] paletteuse" \
 "$OUTPUT"
@@ -90,7 +91,7 @@ docker run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw \
 ```bash
 export INPUT=video.mkv
 export OUTPUT=out.png
-docker run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw \
+docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:master \
 -ss 00:01:30 -i "/temp/$INPUT" \
 -vframes 1 "/temp/$OUTPUT
 ```
@@ -99,7 +100,7 @@ docker run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw \
 
 ```bash
 export INPUT=video.mkv
-docker run --rm -v $PWD:/temp/ zennoe/ffmpeg-docker-ostw \
+docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:master \
 -i "/temp/$INPUT" \
 -c:v rawvideo -f matroska \
 - | ffplay -
