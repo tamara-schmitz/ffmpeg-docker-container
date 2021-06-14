@@ -23,6 +23,13 @@ The shown commands work with either `podman` and `docker` as a prefix. You can s
 
 Feel free to take these examples and adjust them to your needs. Add a video filter with a `-vf` line or crop your input with `-ss 00:16:12.25 -t 2.6 -i "$INPUT`.
 
+**Beware!** Since containers have their own filesystem you have to pass through
+your folder containing your input and output files using `-v
+/host-path:/path-in-container`. In the examples we pass
+through your current working directory. All files you would like to use hence
+have to be in or in a subdirectory of the directory where you execute the
+commands.
+
 #### Test the image and your runtime:
 
 `docker run --rm ghcr.io/tamara-schmitz/ffmpeg-docker-container:master`
@@ -33,7 +40,7 @@ or
 
 #### Simple FLAC to MP3 conversion
 
-`docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:master -i input.flac -c:a libmp3lame -b:a 320k output.mp3`
+`docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:master -i /temp/input.flac -c:a libmp3lame -b:a 320k /temp/output.mp3`
 
 #### Convert 2K gameplay footage to VP9 video in an MKV
 
@@ -81,7 +88,7 @@ docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:
 export INPUT=inputfile.mp4
 export OUTPUT=outputfile.gif
 docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:master \
--ss 00:00:02.25 -t 2.6 -i "$INPUT" \
+-ss 00:00:02.25 -t 2.6 -i "/temp/$INPUT" \
 -filter_complex "[0:v] fps=15,scale=480:-1:flags=lanczos,split [a][b];[a] palettegen [p];[b][p] paletteuse" \
 "$OUTPUT"
 ```
