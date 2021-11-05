@@ -96,8 +96,8 @@ docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:
 ##### Convert a movie to an H.265 video with Opus audio
 
 ```bash
-export INPUT=inputfile.mp4
-export OUTPUT=outputfile.gif
+export INPUT=inputfile.mkv
+export OUTPUT=outputfile.mkv
 time sh -c 'nice -n19 docker run --rm -v "$PWD:/temp" ghcr.io/tamara-schmitz/ffmpeg-docker-container:master \
 -y -i "/temp/$INPUT" \
 -map 0 -c copy \
