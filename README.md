@@ -30,6 +30,8 @@ through your current working directory. All files you would like to use hence
 have to be in or in a subdirectory of the directory where you execute the
 commands.
 
+So if I'm in the folder `/home/me/Videos` and I set the file input.mp4 as my input, my output cannot be in `/home/me/Documents` since the container can only see what is inside `/home/me/Videos`.
+
 #### Test the image and your runtime:
 
 `docker run --rm ghcr.io/tamara-schmitz/ffmpeg-docker-container:master`
