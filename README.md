@@ -1,12 +1,12 @@
 # ffmpeg-docker-container
 A personal FFmpeg container using a recent FFmpeg and library version based off the work of openSUSE Tumbleweed and packman projects. Tested on Linux, likely runs on Windows.
 
-Compatible with *podman* and *docker-ce*. Built in the GitHub container
+Requires either *podman* or *docker-ce*. Built in the GitHub container
 registry.
 
 For Docker newbs on Windows, [see the manual for Docker For Windows](https://docs.docker.com/docker-for-windows/)
 
-Due to how these containers work you need to expose your directory with your workfiles to the container as a volume using `-v`. Read the *Usage* section for more information
+Due to how these containers work you need to expose your directory with your workfiles to the container as a volume using `-v`. Read the *How-to use* section for more information
 
 ## What it is
 
@@ -18,10 +18,13 @@ Encoder libraries receive constant improvements in efficiency, ffmpeg gains more
 
 If you would like to batch convert multiple files, checkout my ffmpeg batch converter script here (not online yet).
 
-### Usage examples
-The shown commands work with either `podman` and `docker` as a prefix. You can substitute either with whatever you are using.
+### How-to use
 
-Feel free to take these examples and adjust them to your needs. Add a video filter with a `-vf` line or crop your input with `-ss 00:16:12.25 -t 2.6 -i "$INPUT`.
+The shown commands work with either `podman` and `docker` as a prefix. If you copy one of the examples, substitute either for whatever you are using. Or even better alias them with `alias docker=podman`.
+
+Feel free to take my examples and adjust them to your needs. Add a video filter with a `-vf` line or crop your input with `-ss 00:16:12.25 -t 2.6 -i "$INPUT`. For the complete rabbid hole again [check out the very complete FFmpeg documentation](https://ffmpeg.org/ffmpeg.html).
+
+It is best to put your long ffmpeg chains into a text file. They can become really long! And I did that too. So check out [my video encoding settings](https://github.com/tamara-schmitz/video-encoding-settings).
 
 **Beware!** Since containers have their own filesystem you have to pass through
 your folder containing your input and output files using `-v
@@ -34,17 +37,23 @@ So if I'm in the folder `/home/me/Videos` and I set the file input.mp4 as my inp
 
 #### Test the image and your runtime:
 
+Let's see if we can even run a container. Use the following to test your setup:
+
 `docker run --rm ghcr.io/tamara-schmitz/ffmpeg-docker-container:master`
 
 or
 
 `podman run --rm ghcr.io/tamara-schmitz/ffmpeg-docker-container:master`
 
-#### Simple FLAC to MP3 conversion
+If everything is in order you should see a long print out about the ffmpeg version. That's good! Now we can start using it.
+
+#### Usage examples
+
+##### Simple FLAC to MP3 conversion
 
 `docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:master -i /temp/input.flac -c:a libmp3lame -b:a 320k /temp/output.mp3`
 
-#### Convert 2K gameplay footage to VP9 video in an MKV
+##### Convert 2K gameplay footage to VP9 video in an MKV
 
 ```bash
 export INPUT=inputfile.mp4
@@ -63,7 +72,7 @@ docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:
 "/temp/$OUTPUT"'
 ```
 
-#### Convert a video to a Discord ready WebM (is under 8MB if video is <35s)
+##### Convert a video to a Discord ready WebM (is under 8MB if video is <35s)
 
 ```bash
 export INPUT=inputfile.mp4
@@ -71,20 +80,33 @@ export OUTPUT=outputfile.webm
 time sh -c 'docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:master -y \
 -i "/temp/$INPUT" \
 -vf scale=-1:720:flags=lanczos \
--c:v libvpx-vp9 -b:v 1.5M -deadline good -cpu-used 1 -threads 0 -g 450 -tile-columns 2 -row-mt 1 -frame-parallel 0 -vsync 2 -aq-mode 1 \
+-c:v libvpx-vp9 -q:v 32 -b:v 1.5M -deadline good -cpu-used 1 -threads 0 -g 450 -tile-columns 2 -row-mt 1 -frame-parallel 0 -vsync 2 -aq-mode 1 \
 -pass 1 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -c:a libopus -b:a 128k -ac 2 -vbr on \
 -f webm /dev/null && \
 docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:master \
 -i "/temp/$INPUT" \
 -vf scale=-1:720:flags=lanczos \
--c:v libvpx-vp9 -b:v 1.5M -deadline good -cpu-used 1 -threads 0 -g 450 -tile-columns 2 -row-mt 1 -frame-parallel 0 -vsync 2 -aq-mode 1 \
+-c:v libvpx-vp9 -q:v 32 -b:v 1.5M -deadline good -cpu-used 1 -threads 0 -g 450 -tile-columns 2 -row-mt 1 -frame-parallel 0 -vsync 2 -aq-mode 1 \
 -pass 2 -auto-alt-ref 2 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -c:a libopus -b:a 128k -ac 2 -vbr on \
 "/temp/$OUTPUT"'
 ```
 
-#### Convert a video to a GIF
+##### Convert a movie to an H.265 video with Opus audio
+
+```bash
+export INPUT=inputfile.mp4
+export OUTPUT=outputfile.gif
+time sh -c 'nice -n19 docker run --rm -v "$PWD:/temp" ghcr.io/tamara-schmitz/ffmpeg-docker-container:master \
+-y -i "/temp/$INPUT" \
+-map 0 -c copy \
+-c:v libx265 -crf 23 -preset veryslow -profile:v main -x265-params level-idc=41:aq-mode=3:tskip=1:nr-intra=20:keyint=300:open-gop=1:vbv-bufsize=6000:vbv-maxrate=8000 \
+-c:a libopus -b:a 224k -sample_fmt s16 -dither_method triangular_hp -vbr constrained \
+"/temp/$OUTPUT"'
+```
+
+##### Convert a video to a GIF
 
 ```bash
 export INPUT=inputfile.mp4
@@ -95,7 +117,7 @@ docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:
 "$OUTPUT"
 ```
 
-#### Export a single still PNG from video
+##### Export a single still PNG from a video
 
 ```bash
 export INPUT=video.mkv
@@ -105,7 +127,7 @@ docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container:
 -vframes 1 "/temp/$OUTPUT
 ```
 
-#### Play a video through the container. (Requires a local installation of ffplay to work)
+##### Play a video through the container, then pipe it to native ffplay. (Requires a local installation of ffplay to work)
 
 ```bash
 export INPUT=video.mkv
