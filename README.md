@@ -62,7 +62,7 @@ time sh -c 'docker run --pull=newer --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz
 -i "/temp/$INPUT" \
 -c:v libvpx-vp9 -b:v 12M -deadline good -cpu-used 2 -threads 0 -g 500 -tile-columns 3 -row-mt 1 -frame-parallel 0 -vsync 2 -aq-mode 1 \
 -pass 1 -passlogfile "/temp/$(basename "$OUTPUT")" \
--c:a libopus -b:a 256k -ac 2 -vbr on \
+-c:a libopus -b:a 256k -ac 2 -vbr constrained \
 -f webm /dev/null && \
 docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -i "/temp/$INPUT" \
@@ -107,7 +107,7 @@ time sh -c 'docker run --pull=newer --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz
 -profile:v high -level:v 4.2 -movflags +faststart \
 -pass 1 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -af loudnorm=i=-15 \
--c:a libfdk_aac -ac 2 -vbr 4 \
+-c:a libfdk_aac -ac 2 -vbr 5 \
 -f null /dev/null && \
 docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -i "/temp/$INPUT" \
@@ -116,7 +116,7 @@ docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container 
 -profile:v high -level:v 4.2 -movflags +faststart \
 -pass 2 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -af loudnorm=i=-15 \
--c:a libfdk_aac -ac 2 -vbr 4 \
+-c:a libfdk_aac -ac 2 -vbr 5 \
 "/temp/$OUTPUT"'
 ```
 
