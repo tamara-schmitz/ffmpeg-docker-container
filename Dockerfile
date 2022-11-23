@@ -7,7 +7,7 @@ ENV ZYPPER_PACKAGES="ffmpeg-5 libass9 \
 
 RUN	zypper ar -cfp 90 http://ftp.uni-erlangen.de/packman/suse/openSUSE_Tumbleweed packman && \
 	zypper --gpg-auto-import-keys ref && zypper --non-interactive dup --allow-vendor-change --allow-downgrade && \
-	zypper --non-interactive install $ZYPPER_PACKAGES && \
+	zypper --non-interactive install --recommends --allow-vendor-change --allow-downgrade $ZYPPER_PACKAGES && \
 	zypper clean -a
 
 ENTRYPOINT	["ffmpeg"]
