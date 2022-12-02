@@ -82,7 +82,7 @@ time sh -c 'docker run --pull=newer --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz
 -vf scale=-1:720:flags=bicubic \
 -c:v libvpx-vp9 -q:v 32 -b:v 1.5M -deadline good -cpu-used 2 -threads 0 -g 400 -tile-columns 2 -row-mt 1 -frame-parallel 0 -vsync 2 \
 -pass 1 -passlogfile "/temp/$(basename "$OUTPUT")" \
--af loudnorm=i=-15
+-af loudnorm=i=-15 \
 -c:a libopus -b:a 160k -ac 2 -vbr constrained \
 -f webm /dev/null && \
 docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
@@ -90,7 +90,7 @@ docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container 
 -vf scale=-1:720:flags=bicubic \
 -c:v libvpx-vp9 -q:v 32 -b:v 1.5M -deadline good -cpu-used 2 -threads 0 -g 400 -tile-columns 2 -row-mt 1 -frame-parallel 0 -vsync 2 \
 -pass 2 -auto-alt-ref 2 -passlogfile "/temp/$(basename "$OUTPUT")" \
--af loudnorm=i=-15
+-af loudnorm=i=-15 \
 -c:a libopus -b:a 160k -ac 2 -vbr constrained \
 "/temp/$OUTPUT"'
 ```
