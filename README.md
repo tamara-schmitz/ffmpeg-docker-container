@@ -28,7 +28,7 @@ It is best to put your long ffmpeg chains into a text file. They can become real
 
 **Beware!** Since containers have their own filesystem you have to pass through
 your folder containing your input and output files using `-v
-/host-path:/path-in-container`. In the examples we pass
+/host-path:/path-in-container:z`. In the examples we pass
 through your current working directory. All files you would like to use hence
 have to be in or in a subdirectory of the directory where you execute the
 commands.
@@ -51,22 +51,22 @@ If everything is in order you should see a long print out about the ffmpeg versi
 
 ##### Simple FLAC to MP3 conversion
 
-`docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container -i /temp/input.flac -c:a libmp3lame -b:a 320k /temp/output.mp3`
+`docker run --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container -i /temp/input.flac -c:a libmp3lame -b:a 320k /temp/output.mp3`
 
 ##### Convert 2K gameplay footage to VP9 video in an MKV
 
 ```bash
 export INPUT=inputfile.mp4
 export OUTPUT=outputfile.mkv
-time sh -c 'docker run --pull=newer --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container -y \
+time sh -c 'docker run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container -y \
 -i "/temp/$INPUT" \
--c:v libvpx-vp9 -b:v 12M -deadline good -cpu-used 2 -threads 0 -g 500 -tile-columns 3 -row-mt 1 -frame-parallel 0 -vsync 2 -aq-mode 1 \
+-c:v libvpx-vp9 -b:v 12M -deadline good -cpu-used 2 -threads 0 -g 500 -tile-columns 3 -row-mt 1 -frame-parallel 0 -vsync 2 \
 -pass 1 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -c:a libopus -b:a 256k -ac 2 -vbr constrained \
 -f webm /dev/null && \
-docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
+docker run --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -i "/temp/$INPUT" \
--c:v libvpx-vp9 -b:v 12M -deadline good -cpu-used 2 -threads 0 -g 500 -tile-columns 3 -row-mt 1 -frame-parallel 0 -vsync 2 -aq-mode 1 \
+-c:v libvpx-vp9 -b:v 12M -deadline good -cpu-used 2 -threads 0 -g 500 -tile-columns 3 -row-mt 1 -frame-parallel 0 -vsync 2 \
 -pass 2 -auto-alt-ref 2 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -c:a copy \
 "/temp/$OUTPUT"'
@@ -77,7 +77,7 @@ docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container 
 ```bash
 export INPUT=inputfile.mp4
 export OUTPUT=outputfile.webm
-time sh -c 'docker run --pull=newer --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container -y \
+time sh -c 'docker run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container -y \
 -i "/temp/$INPUT" \
 -vf scale=-1:720:flags=bicubic \
 -c:v libvpx-vp9 -q:v 32 -b:v 1.5M -deadline good -cpu-used 2 -threads 0 -g 400 -tile-columns 2 -row-mt 1 -frame-parallel 0 -vsync 2 \
@@ -85,7 +85,7 @@ time sh -c 'docker run --pull=newer --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz
 -af loudnorm=i=-15 \
 -c:a libopus -b:a 160k -ac 2 -vbr constrained \
 -f webm /dev/null && \
-docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
+docker run --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -i "/temp/$INPUT" \
 -vf scale=-1:720:flags=bicubic \
 -c:v libvpx-vp9 -q:v 32 -b:v 1.5M -deadline good -cpu-used 2 -threads 0 -g 400 -tile-columns 2 -row-mt 1 -frame-parallel 0 -vsync 2 \
@@ -100,7 +100,7 @@ docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container 
 ```bash
 export INPUT=inputfile.mp4
 export OUTPUT=outputfile.mp4
-time sh -c 'docker run --pull=newer --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container -y \
+time sh -c 'docker run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container -y \
 -i "/temp/$INPUT" \
 -vf scale=-1:720:flags=bicubic,format=yuv420p \
 -c:v libx264 -crf 25 -b:v 1.75M -preset slow -vsync 2 -aq-mode 3 \
@@ -109,7 +109,7 @@ time sh -c 'docker run --pull=newer --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz
 -af loudnorm=i=-15 \
 -c:a libfdk_aac -ac 2 -vbr 5 \
 -f null /dev/null && \
-docker run --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
+docker run --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -i "/temp/$INPUT" \
 -vf scale=-1:720:flags=bicubic,format=yuv420p \
 -c:v libx264 -crf 25 -b:v 1.75M -preset slow -vsync 2 -aq-mode 3 \
@@ -138,7 +138,7 @@ time sh -c 'nice -n19 docker run --pull=newer --rm -v "$PWD:/temp" ghcr.io/tamar
 ```bash
 export INPUT=inputfile.mp4
 export OUTPUT=outputfile.gif
-docker run --pull=newer --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
+docker run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -ss 00:00:02.25 -t 2.6 -i "/temp/$INPUT" \
 -filter_complex "[0:v] fps=15,scale=480:-1:flags=bicubic,split [a][b];[a] palettegen [p];[b][p] paletteuse" \
 "$OUTPUT"
@@ -149,7 +149,7 @@ docker run --pull=newer --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-dock
 ```bash
 export INPUT=video.mkv
 export OUTPUT=out.png
-docker run --pull=newer --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
+docker run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -ss 00:01:30 -i "/temp/$INPUT" \
 -vframes 1 "/temp/$OUTPUT
 ```
@@ -158,7 +158,7 @@ docker run --pull=newer --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-dock
 
 ```bash
 export INPUT=video.mkv
-docker run --pull=newer --rm -v "$PWD:/temp/" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
+docker run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -i "/temp/$INPUT" \
 -c:v rawvideo -f matroska \
 - | ffplay -
