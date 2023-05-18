@@ -49,6 +49,12 @@ If everything is in order you should see a long print out about the ffmpeg versi
 
 #### Usage examples
 
+If you are using podman instead of docker, just replace `docker` with `podman`
+in the commands listed below.
+
+If you are worried about system responsiveness, you can prepend `chrt -b 0` to
+your run commands, too.
+
 ##### Simple FLAC to MP3 conversion
 
 `docker run --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container -i /temp/input.flac -c:a libmp3lame -b:a 320k /temp/output.mp3`
