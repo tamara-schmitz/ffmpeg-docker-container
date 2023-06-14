@@ -14,6 +14,9 @@ FFmpeg is a big flexible suite of filters, codecs and muxers allowing you to cre
 
 Encoder libraries receive constant improvements in efficiency, ffmpeg gains more features and codecs. However some distributions keep using old versions from years ago. Hence this container can help you to benefit from the latest releases.
 
+There are two versions: *free* and *nonfree*. The latter includes codecs that
+may be protected by software patents in certain regions.
+
 ## Other resources
 
 If you would like to batch convert multiple files, checkout my ffmpeg batch converter script here (not online yet).
@@ -54,6 +57,16 @@ in the commands listed below.
 
 If you are worried about system responsiveness, you can prepend `chrt -b 0` to
 your run commands, too.
+
+
+### Non-free vs free
+
+By default the container as it is listed here refers to the non-free version. If
+you want to use the *free* version that does not contain codecs that may be
+protected by software patents in certain regions, then append *-free* to the
+image name, like so:
+
+`docker run --pull=newer --rm ghcr.io/tamara-schmitz/ffmpeg-docker-container-free`
 
 ##### Simple FLAC to MP3 conversion
 
