@@ -59,14 +59,19 @@ If you are worried about system responsiveness, you can prepend `chrt -b 0` to
 your run commands, too.
 
 
-### Non-free vs free
+### Using the free version instead of non-free
 
-By default the container as it is listed here refers to the non-free version. If
-you want to use the *free* version that does not contain codecs that may be
-protected by software patents in certain regions, then append *-free* to the
-image name, like so:
+By default the container as it is listed here refers to the non-free version. The *free* version does not contain codecs
+that may be protected by software patents in certain regions.
+On GitHub this version is hosted with the appendix *-free* and can be used like so:
 
-`docker run --pull=newer --rm ghcr.io/tamara-schmitz/ffmpeg-docker-container-free`
+`podman run --pull=newer --rm ghcr.io/tamara-schmitz/ffmpeg-docker-container-free`
+
+The image is also built on
+[Open Build Service](https://build.opensuse.org/package/show/home:tschmitz:branches:openSUSE:Templates:Images:Tumbleweed/ffmpeg-docker-container)
+and can be used using:
+
+`podman run --pull=newer --rm registry.opensuse.org/home/tschmitz/branches/opensuse/templates/images/tumbleweed/containers/opensuse/ffmpeg`
 
 ##### Simple FLAC to MP3 conversion
 
