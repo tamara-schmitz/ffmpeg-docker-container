@@ -1,7 +1,7 @@
 FROM	opensuse/tumbleweed
 
 # Define labels according to https://en.opensuse.org/Building_derived_containers
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: GPL-3.0-only
 #!BuildTag: opensuse/ffmpeg:latest opensuse/ffmpeg:%PKG_VERSION% opensuse/ffmpeg:%PKG_VERSION%.%RELEASE%
 # labelprefix=org.opensuse.ffmpeg
 LABEL org.opencontainers.image.title="ffmpeg container"
