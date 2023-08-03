@@ -17,6 +17,21 @@ Encoder libraries receive constant improvements in efficiency, ffmpeg gains more
 There are two versions: *free* and *nonfree*. The latter includes codecs that
 may be protected by software patents in certain regions.
 
+### free version vs non-free
+
+By default the container as it is listed here refers to the non-free version. The *free* version does not contain codecs
+that may be protected by software patents in certain regions.
+On GitHub this version is hosted with the appendix *-free* and can be used like so:
+
+`podman run --pull=newer --rm ghcr.io/tamara-schmitz/ffmpeg-docker-container-free`
+
+The image is also built on
+[Open Build Service](https://build.opensuse.org/package/show/home:tschmitz:branches:openSUSE:Templates:Images:Tumbleweed/ffmpeg-docker-container)
+and can be used using:
+
+`podman run --pull=newer --rm registry.opensuse.org/home/tschmitz/branches/opensuse/templates/images/tumbleweed/containers/opensuse/ffmpeg`
+
+
 ## Other resources
 
 If you would like to batch convert multiple files, checkout my ffmpeg batch converter script here (not online yet).
@@ -57,21 +72,6 @@ in the commands listed below.
 
 If you are worried about system responsiveness, you can prepend `chrt -b 0` to
 your run commands, too.
-
-
-### Using the free version instead of non-free
-
-By default the container as it is listed here refers to the non-free version. The *free* version does not contain codecs
-that may be protected by software patents in certain regions.
-On GitHub this version is hosted with the appendix *-free* and can be used like so:
-
-`podman run --pull=newer --rm ghcr.io/tamara-schmitz/ffmpeg-docker-container-free`
-
-The image is also built on
-[Open Build Service](https://build.opensuse.org/package/show/home:tschmitz:branches:openSUSE:Templates:Images:Tumbleweed/ffmpeg-docker-container)
-and can be used using:
-
-`podman run --pull=newer --rm registry.opensuse.org/home/tschmitz/branches/opensuse/templates/images/tumbleweed/containers/opensuse/ffmpeg`
 
 ##### Simple FLAC to MP3 conversion
 
