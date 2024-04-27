@@ -184,6 +184,6 @@ docker run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-doc
 export INPUT=video.mkv
 docker run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -i "/temp/$INPUT" \
--c:v rawvideo -f matroska \
+-c:v rawvideo -c:a pcm_s16le -f matroska \
 - | ffplay -
 ```
