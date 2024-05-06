@@ -42,7 +42,7 @@ The shown commands work with either `podman` and `docker` as a prefix. If you co
 
 Feel free to take my examples and adjust them to your needs. Add a video filter with a `-vf` line or crop your input with `-ss 00:16:12.25 -t 2.6 -i "$INPUT`. For the complete rabbid hole again [check out the very complete FFmpeg documentation](https://ffmpeg.org/ffmpeg.html).
 
-It is best to put your long ffmpeg chains into a text file. They can become really long! And I did that too. So check out [my video encoding settings](https://github.com/tamara-schmitz/video-encoding-settings).
+It is best to put your long ffmpeg chains into a text file. They can become really long!
 
 **Beware!** Since containers have their own filesystem you have to pass through
 your folder containing your input and output files using `-v
