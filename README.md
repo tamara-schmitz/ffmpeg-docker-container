@@ -84,13 +84,13 @@ export INPUT=inputfile.mp4
 export OUTPUT=outputfile.mkv
 time sh -c 'docker run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container -y \
 -i "/temp/$INPUT" \
--c:v libvpx-vp9 -b:v 12M -deadline good -cpu-used 2 -threads 0 -g 500 -tile-columns 3 -row-mt 1 -frame-parallel 0 -vsync 2 \
+-c:v libvpx-vp9 -b:v 12M -deadline good -cpu-used 2 -threads 0 -g 500 -tile-columns 3 -row-mt 1 -frame-parallel 0 \
 -pass 1 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -c:a libopus -b:a 256k -ac 2 -vbr constrained \
 -f webm /dev/null && \
 docker run --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -i "/temp/$INPUT" \
--c:v libvpx-vp9 -b:v 12M -deadline good -cpu-used 2 -threads 0 -g 500 -tile-columns 3 -row-mt 1 -frame-parallel 0 -vsync 2 \
+-c:v libvpx-vp9 -b:v 12M -deadline good -cpu-used 2 -threads 0 -g 500 -tile-columns 3 -row-mt 1 -frame-parallel 0 \
 -pass 2 -auto-alt-ref 2 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -c:a copy \
 "/temp/$OUTPUT"'
@@ -104,7 +104,7 @@ export OUTPUT=outputfile.webm
 time sh -c 'docker run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container -y \
 -i "/temp/$INPUT" \
 -vf scale=-1:720:flags=bicubic \
--c:v libvpx-vp9 -q:v 32 -b:v 1.5M -deadline good -cpu-used 2 -threads 0 -g 400 -tile-columns 2 -row-mt 1 -frame-parallel 0 -vsync 2 \
+-c:v libvpx-vp9 -q:v 32 -b:v 1.5M -deadline good -cpu-used 2 -threads 0 -g 400 -tile-columns 2 -row-mt 1 -frame-parallel 0 \
 -pass 1 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -af loudnorm=i=-15 \
 -c:a libopus -b:a 160k -ac 2 -vbr constrained \
@@ -112,7 +112,7 @@ time sh -c 'docker run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmit
 docker run --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -i "/temp/$INPUT" \
 -vf scale=-1:720:flags=bicubic \
--c:v libvpx-vp9 -q:v 32 -b:v 1.5M -deadline good -cpu-used 2 -threads 0 -g 400 -tile-columns 2 -row-mt 1 -frame-parallel 0 -vsync 2 \
+-c:v libvpx-vp9 -q:v 32 -b:v 1.5M -deadline good -cpu-used 2 -threads 0 -g 400 -tile-columns 2 -row-mt 1 -frame-parallel 0 \
 -pass 2 -auto-alt-ref 2 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -af loudnorm=i=-15 \
 -c:a libopus -b:a 160k -ac 2 -vbr constrained \
@@ -127,7 +127,7 @@ export OUTPUT=outputfile.mp4
 time sh -c 'docker run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container -y \
 -i "/temp/$INPUT" \
 -vf scale=-1:720:flags=bicubic,format=yuv420p \
--c:v libx264 -crf 25 -b:v 1.75M -preset slow -vsync 2 -aq-mode 3 \
+-c:v libx264 -crf 25 -b:v 1.75M -preset slow -aq-mode 3 \
 -profile:v high -level:v 4.2 -movflags +faststart \
 -pass 1 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -af loudnorm=i=-15 \
@@ -136,7 +136,7 @@ time sh -c 'docker run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmit
 docker run --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -i "/temp/$INPUT" \
 -vf scale=-1:720:flags=bicubic,format=yuv420p \
--c:v libx264 -crf 25 -b:v 1.75M -preset slow -vsync 2 -aq-mode 3 \
+-c:v libx264 -crf 25 -b:v 1.75M -preset slow -aq-mode 3 \
 -profile:v high -level:v 4.2 -movflags +faststart \
 -pass 2 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -af loudnorm=i=-15 \
@@ -166,6 +166,15 @@ docker run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-doc
 -ss 00:00:02.25 -t 2.6 -i "/temp/$INPUT" \
 -filter_complex "[0:v] fps=15,scale=480:-1:flags=bicubic,split [a][b];[a] palettegen [p];[b][p] paletteuse" \
 "$OUTPUT"
+```
+
+##### Convert an image sequence into a video and stabilise it
+
+You may want to reduce the zoom.
+
+```
+ffmpeg -framerate 5 -start_number 80 -i P1000%03d.JPG -t 15.2 -vf vidstabdetect -f null -
+ffmpeg -framerate 5 -start_number 80 -i P1080%03d.JPG -t 15.2 -vf vidstabtransform=zoom=10,scale=-1:1724:flags=bicubic,format=yuv420p -c:v libx264 -preset slow -crf 25 meow.mp4
 ```
 
 ##### Export a single still PNG from a video
