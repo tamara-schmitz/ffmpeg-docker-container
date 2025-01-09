@@ -96,6 +96,19 @@ docker run --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container
 "/temp/$OUTPUT"'
 ```
 
+##### Convert a video Fedi (not Mastodon) ready WebM and AV1
+
+```bash
+export INPUT=input.mp4
+export OUTPUT=output.webm
+podman run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
+-i "/temp/$INPUT" \
+-vf scale=-1:1080:flags=bicubic \
+-c:v libsvtav1 -crf 50 -preset 3 -g 300 -svtav1-params tune=0:enable-variance-boost=1 \
+-c:a libopus -b:a 192k -ac 2 -vbr constrained \
+"/temp/$OUTPUT"
+```
+
 ##### Convert a video to a Discord ready WebM (is under 8MB if video is <35s)
 
 ```bash
