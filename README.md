@@ -104,7 +104,7 @@ export OUTPUT=output.webm
 podman run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -i "/temp/$INPUT" \
 -vf scale=-1:1080:flags=bicubic \
--c:v libsvtav1 -crf 50 -preset 3 -g 300 -svtav1-params tune=0:enable-variance-boost=1 \
+-c:v libsvtav1 -crf 50 -preset 3 -g 300 -svtav1-params tune=0:enable-variance-boost=1:fast-decode=0:enable-overlays=1 \
 -c:a libopus -b:a 192k -ac 2 -vbr constrained \
 "/temp/$OUTPUT"
 ```
@@ -187,7 +187,7 @@ You may want to reduce the zoom.
 
 ```
 ffmpeg -framerate 5 -start_number 80 -i P1000%03d.JPG -t 15.2 -vf vidstabdetect -f null -
-ffmpeg -framerate 5 -start_number 80 -i P1080%03d.JPG -t 15.2 -vf vidstabtransform=zoom=10,scale=-1:1724:flags=bicubic,format=yuv420p -c:v libx264 -preset slow -crf 25 meow.mp4
+ffmpeg -framerate 5 -start_number 80 -i P1000%03d.JPG -t 15.2 -vf vidstabtransform=interpol=bicubic:zoom=5,scale=-1:1080:flags=bicubic,format=yuv420p -c:v libx264 -preset slow -crf 25 meow.mp4
 ```
 
 ##### Export a single still PNG from a video

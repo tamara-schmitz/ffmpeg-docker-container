@@ -12,10 +12,10 @@ LABEL org.openbuildservice.disturl="%DISTURL%"
 LABEL org.opencontainers.image.created="%BUILDTIME%"
 # endlabelprefix
 
-ENV ZYPPER_PACKAGES="ffmpeg-6 libass9 \
+ENV ZYPPER_PACKAGES="ffmpeg-7 libass9 \
 		libopus0 libogg0 libvorbis0 libmpeg2-0 libmp3lame0 libfdk-aac2 \
 		libwebp7 \
-		libvpx9 libaom3 dav1d librav1e0_7 libSvtAv1Enc2"
+		libvpx11 libaom3 dav1d librav1e0_8 libSvtAv1Enc3"
 
 RUN	zypper --non-interactive install --recommends --allow-vendor-change --allow-downgrade $ZYPPER_PACKAGES && \
 	zypper clean -a
