@@ -104,7 +104,7 @@ export OUTPUT=output.webm
 podman run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -i "/temp/$INPUT" \
 -vf scale=-1:1080:flags=bicubic \
--c:v libsvtav1 -crf 50 -preset 3 -g 300 -svtav1-params tune=0:enable-variance-boost=1:enable-overlays=1:superres-mode=4 \
+-c:v libsvtav1 -crf 50 -preset 3 -g 300 -svtav1-params enable-variance-boost=1 \
 -c:a libopus -b:a 192k -ac 2 -vbr constrained \
 "/temp/$OUTPUT"
 ```
