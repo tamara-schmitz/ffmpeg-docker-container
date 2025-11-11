@@ -103,7 +103,7 @@ export INPUT=input.mp4
 export OUTPUT=output.webm
 podman run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -i "/temp/$INPUT" \
--vf scale=-1:1080:flags=bicubic \
+-vf scale=-1:1080:flags=bicubic+accurate_rnd:gamma=1 \
 -c:v libsvtav1 -crf 50 -preset 3 -g 300 -svtav1-params enable-variance-boost=1 \
 -c:a libopus -b:a 192k -ac 2 -vbr constrained \
 "/temp/$OUTPUT"
@@ -116,7 +116,7 @@ export INPUT=inputfile.mp4
 export OUTPUT=outputfile.webm
 time sh -c 'podman run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container -y \
 -i "/temp/$INPUT" \
--vf scale=-1:720:flags=bicubic \
+-vf scale=-1:720:flags=bicubic+accurate_rnd:gamma=1 \
 -c:v libvpx-vp9 -q:v 32 -b:v 1.5M -deadline good -cpu-used 2 -threads 0 -g 400 -tile-columns 2 -row-mt 1 -frame-parallel 0 \
 -pass 1 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -af loudnorm=i=-15 \
@@ -124,7 +124,7 @@ time sh -c 'podman run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmit
 -f webm /dev/null && \
 podman run --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -i "/temp/$INPUT" \
--vf scale=-1:720:flags=bicubic \
+-vf scale=-1:720:flags=bicubic+accurate_rnd:gamma=1 \
 -c:v libvpx-vp9 -q:v 32 -b:v 1.5M -deadline good -cpu-used 2 -threads 0 -g 400 -tile-columns 2 -row-mt 1 -frame-parallel 0 \
 -pass 2 -auto-alt-ref 2 -passlogfile "/temp/$(basename "$OUTPUT")" \
 -af loudnorm=i=-15 \
@@ -139,7 +139,7 @@ export INPUT=inputfile.mp4
 export OUTPUT=outputfile.mp4
 time sh -c 'podman run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container -y \
 -i "/temp/$INPUT" \
--vf scale=-1:720:flags=bicubic,format=yuv420p \
+-vf scale=-1:720:flags=bicubic+accurate_rnd:gamma=1,format=yuv420p \
 -c:v libx264 -crf 25 -b:v 1.75M -preset slow -aq-mode 3 \
 -profile:v high -level:v 4.2 -movflags +faststart \
 -pass 1 -passlogfile "/temp/$(basename "$OUTPUT")" \
@@ -148,7 +148,7 @@ time sh -c 'podman run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmit
 -f null /dev/null && \
 podman run --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -i "/temp/$INPUT" \
--vf scale=-1:720:flags=bicubic,format=yuv420p \
+-vf scale=-1:720:flags=bicubic+accurate_rnd:gamma=1,format=yuv420p \
 -c:v libx264 -crf 25 -b:v 1.75M -preset slow -aq-mode 3 \
 -profile:v high -level:v 4.2 -movflags +faststart \
 -pass 2 -passlogfile "/temp/$(basename "$OUTPUT")" \
@@ -177,7 +177,7 @@ export INPUT=inputfile.mp4
 export OUTPUT=outputfile.gif
 podman run --pull=newer --rm -v "$PWD:/temp:z" ghcr.io/tamara-schmitz/ffmpeg-docker-container \
 -ss 00:00:02.25 -t 2.6 -i "/temp/$INPUT" \
--filter_complex "[0:v] fps=15,scale=480:-1:flags=bicubic,split [a][b];[a] palettegen [p];[b][p] paletteuse" \
+-filter_complex "[0:v] fps=15,scale=480:-1:flags=bicubic+accurate_rnd:gamma=1,split [a][b];[a] palettegen [p];[b][p] paletteuse" \
 "$OUTPUT"
 ```
 
@@ -187,7 +187,7 @@ You may want to reduce the zoom.
 
 ```
 ffmpeg -framerate 5 -start_number 80 -i P1000%03d.JPG -t 15.2 -vf vidstabdetect -f null -
-ffmpeg -framerate 5 -start_number 80 -i P1000%03d.JPG -t 15.2 -vf vidstabtransform=interpol=bicubic:zoom=5,scale=-1:1080:flags=bicubic,format=yuv420p -c:v libx264 -preset slow -crf 25 meow.mp4
+ffmpeg -framerate 5 -start_number 80 -i P1000%03d.JPG -t 15.2 -vf vidstabtransform=interpol=bicubic:zoom=5,scale=-1:1080:flags=bicubic+accurate_rnd:gamma=1,format=yuv420p -c:v libx264 -preset slow -crf 25 meow.mp4
 ```
 
 ##### Export a single still PNG from a video
